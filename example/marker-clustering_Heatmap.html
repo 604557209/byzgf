@@ -1,0 +1,46 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <title>Leaflet Quick Start Guide Example</title> 
+    <meta charset="utf-8" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <!-- 引用 --> 
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
+     <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
+      <script src="http://leaflet.github.io/Leaflet.heat/dist/leaflet-heat.js"></script>
+    <!-- 引用本地 --> 
+    <!-- <link rel="stylesheet" href="debug/leaflet.css" /> 
+    <script type="text/javascript" src="debug/deps.js"></script> 
+    <script src="debug/leaflet-include.js"></script> --> 
+    <script type="text/javascript" src="./re_node.js"></script>
+    <script> 
+        window.onload=function(){ 
+            //初始化地图控件 
+            //var map = L.map('map').setView([51.505, -0.09], 13); 
+            // var map =  L.map('map').setView([32.001453, 120.334633], 11); 
+            // 31.1376, 120.73975
+            var map =  L.map('map').setView([31.184167, 122.170833], 10);
+            
+            //添加图层 
+           L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiNjA0NTUyNzA5IiwiYSI6ImNpZmJzZjF4bjJ3cHVzdWtucWRzYmhua3QifQ.GYXlJAB80tFG4B0-euFCsg', {
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+               maxZoom: 18,
+               id: '604552709.cifbsf0ev2xcysdknrcm0850z'
+}).addTo(map);
+    
+  var data_array= [0,0,0]; //create it before filling 
+  for (i = 0; i < data.length; i++) {
+    data_array[i] = [parseFloat(data[i][1]), parseFloat(data[i][0]),parseFloat(data[i][3])];
+}
+var heat = L.heatLayer(data_array,{
+          radius: 5,
+          blur: 8, 
+          maxZoom: 12,
+      }).addTo(map);
+};
+   </script>
+</head> 
+<body> 
+     <div id="map" style="width: 1600px; height: 900px"></div> 
+</body> 
+</html>
