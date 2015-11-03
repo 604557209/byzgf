@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaflet debug page</title>
+
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="screen.css" />
+
+	<link rel="stylesheet" href="../dist/MarkerCluster.css" />
+	<link rel="stylesheet" href="../dist/MarkerCluster.Default.css" />
+	<script src="../dist/leaflet.markercluster-src.js"></script>
+	<script src="./node.js"></script>
+
+</head>
+<body>
+
+	<div id="map"></div>
+	<span>Mouse over a cluster to see the bounds of its children and click a cluster to zoom to those bounds</span>
+	<script type="text/javascript">
+
+		// var tiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+		// 		maxZoom: 18,
+		// 		attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors, Points &copy 2012 LINZ'
+		// 	}),
+		// 	latlng = L.latLng(-37.82, 175.24);
+
+		// var map = L.map('map', {center: latlng, zoom: 13, layers: [tiles]});
+		
+            //初始化地图控件 
+            //var map = L.map('map').setView([51.505, -0.09], 13); 
+            // var map =  L.map('map').setView([32.001453, 120.334633], 11); 
+            //添加图层 
+           var tiles = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiNjA0NTUyNzA5IiwiYSI6ImNpZmJzZjF4bjJ3cHVzdWtucWRzYmhua3QifQ.GYXlJAB80tFG4B0-euFCsg', {
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+               maxZoom: 18,
+               id: '604552709.cifbsf0ev2xcysdknrcm0850z'
+}), 
+   latlng = L.latLng(32.001453, 120.334633);
+       var map = L.map('map', {center: latlng, zoom: 11, layers: [tiles]});
+       var markers = L.markerClusterGroup();
+		
+		for (var i = 0; i < data.length; i++) {
+			var data1 = data[i];
+			var lat = data1["LAT"];
+			var lon = data1["LON"];
+			var title = data1["COG"];
+			var marker = L.marker(new L.LatLng(lat, lon), { title: title });
+			marker.bindPopup(title);
+			markers.addLayer(marker);
+		}
+       map.addLayer(markers);
+	</script>
+</body>
+</html>
