@@ -1,0 +1,153 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <title>cluster_k-means</title> 
+    <meta charset="utf-8" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="./cluster_data.js"></script>
+    <script type="text/javascript">
+          //var cluster = new Array();
+          var k = new Array();   //存储k个对象的下标
+          var initial = new Array(); //记录第i次聚类结果
+          var record = new Array();  //记录第i-1次聚类结果
+          var dataLength = data.length; //数据集长度
+          var means = new Array();     //每次更新的对象均值，也就是速度均值
+
+          function initialCluster(kl){
+
+             for(var j = 0;j < kl;j++){        //从数据集data中随机选择k个对象作为初始簇中心
+             initial[j] = new Array();
+             initial[j].push(Math.ceil(Math.random()*dataLength));//产生初始对象下标
+             k[j] = initial[j][0];
+             means[j] = data[k[j]][4];
+             }
+
+           }
+
+          function init_cluster(){
+
+              for(var i = 0;i < dataLength;i++){  //将数据集中的对象分配到最相似的簇
+                       if(k.indexOf(i)!=-1)
+                          continue;
+                    var group = getgroup(i);
+                    var length1 = initial[group];
+                  if(Array.isArray(length1))     
+                    initial[group].push(i);
+                }
+              for(var j = 0;j < k.length;j++)  //一次性常量
+                     k[j] = -1;
+  
+           }
+          function cluster(){  //迭代聚类
+             init_cluster();   
+             if(!equals()){    //当两次聚类结果不一致时，继续迭代
+               copyCluster();
+               getMeans();
+               clearInit();
+               init_cluster();
+             }else{
+               return true;
+               
+             }
+        }
+
+          function equals(){    //比较两次聚类结果initial和record
+              var flag = true;
+              if(record.length==0){
+                  for(var j = 0;j < initial.length;j++){ //复制数组作对比
+                     record[j] = new Array();
+                     for(var k = 0;k < initial[j].length;k++)
+                       record.push(initial[j][k]);    
+                   } 
+                   flag = false;
+                 }else{
+                    for(var m = 0;m < initial.length;i++){
+                            if(initial[m].length!=record[m].length){ 
+                              flag = false;
+                              break;
+                            }else{
+                                initial[m].sort();
+                                record[m].sort();
+                                 for(var n = 0;n < initial.length;n++)
+                                     if(initial[m][n]!=record[m][m]){
+                                        flag = false;
+                                        break;
+                                  }
+                            }
+                    }
+  
+                 }
+                 return flag;
+               } 
+          function copyCluster(){   //复制簇
+              
+               for(var i = 0;i < initial.length;i++){
+                     record[i].splice(0,record[i].length);  //提前清空数组
+                     for(var j = 0 ;j < initial[i].length;j++)
+                         record[i].push(initial[i][j]);
+                   }
+
+             }
+
+          function clearInit(){
+            
+            for(var i = 0;i<initial.length;i++){
+               initial[i].splice(0,initial[i].length);//清空簇
+           }
+
+          }
+          
+          function getgroup(index){
+                 var group = 0;
+                 var mingap = Math.abs(means[0]-data[index][4]);
+                 for(var i = 1;i<k.length;i++){
+                        var gap = Math.abs(means[i]-data[index][4]);
+                        if(gap < mingap){
+                           group = i;
+                           mingap = gap;
+                       }
+
+                 }
+               return group;
+               }
+
+          function getMeans(){   //计算各簇的速度均值
+                    var sum = 0.0 ;
+                   for(var i = 0;i<k.length;i++){
+                         for(var j = 0 ;j<initial[i].length;j++)
+                            sum += data[initial[i][j]][4];
+                            means[i] = sum/initial[i].length;
+                            sum = 0.0;
+                   }
+                 }
+
+          function displaycluster(){
+                  var k = 25;
+                  var k1 = prompt("请输入簇的数量:","25");
+                  if (k1 != null){
+                      k = parseInt(k1);
+                 }else{
+                    alert("你选择了默认项");
+               }
+
+                  initialCluster(k);
+                  cluster();
+                  document.write("共分为"+k+"簇:<br>");
+                  for(var i = 0 ;i<initial.length;i++){
+                       initial[i].sort();
+                       document.write("第"+(i+1)+"簇的容量为:"+initial[i].length+"</br>");
+                       document.write("第"+(i+1)+"簇的速度内容如下:</br>");
+                       for(var j = 0;j<initial[i].length;j++){
+                         if((j+1)%10==0)
+                         document.write(data[initial[i][j]][4]+"<br>");
+                         else
+                        document.write(data[initial[i][j]][4]+"       ");
+                       }
+                       document.write("<br>");
+                  }
+           }      
+      window.onload =displaycluster();
+  </script>
+  <body>
+  </body>
+  </html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <title>cluster_k-means</title> 
+    <meta charset="utf-8" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="./cluster_data.js"></script>
+    <script type="text/javascript">
+          var k = new Array();   //存储initial_k个对象的下标
+          var k1 = new Array();  //存储record_k个对象的下标
+          var initial = new Array(); //记录第i次聚类结果
+          var record = new Array();  //记录第i-1次聚类结果
+          var dataLength = data.length; //数据集长度
+         
+          var E_former = 0;
+          var E_latter = 0;        
+            function initialCluster(kl){
+
+             for(var j = 0;j < kl;j++){
+             record[j] = new Array();                         
+             initial[j] = new Array();
+             initial[j].push(Math.ceil(Math.random()*dataLength));  //从数据集data中随机选择k个对象作为初始簇中心
+             k[j] = initial[j][0];  //产生初始对象下标
+             k1[j] = initial[j][0];
+             // means[j] = data[k[j]][4];
+             }
+           } 
+           
+            function init_cluster(){  //初始化initial多维数组
+
+              for(var i = 0;i < dataLength;i++){  //将数据集中的对象分配到最相似的簇
+                       if(k.indexOf(i)!=-1)
+                          continue;
+                    var group = get_initial_group(i);
+                    var length1 = initial[group];
+
+                  if(Array.isArray(length1))     
+                    initial[group].push(i);
+                }
+           }
+
+           function PAM1(){  //PAM第二版本
+
+           	   var sub_k;
+           	   var count = 0;
+           	   var flag = true;
+           	   var min_E = 0;
+           	   init_cluster(); 
+           	   E_former = getE_initial();
+               for(var i = 0;i < k.length;i++){
+                   while(flag){
+                       sub_k = Math.ceil(Math.random()*dataLength)-1; //随机选取替换对象sub_k
+                       while(k[i]==sub_k||sub_k==-1){
+                       	    sub_k = Math.ceil(Math.random()*dataLength)-1;
+                       }
+                       k1[i] = sub_k;
+                       record_cluster(); 
+                       E_latter = getE_record();
+                       if(count<100){       //对k中的每个初始中心对象尝试替换100次
+                            count++;
+                       	    if(E_latter<E_former){ //选取最合适的对象充当中心对象
+                            k[i] = k1[i];
+                             copy_initial();   // record->initial,并清空数组record;                                         
+                            E_former = E_latter;
+                          }else{
+                            k1[i] = k[i];
+                            clear_record();
+                          }
+                        }else{
+                         k1[i] = k[i];
+                         clear_record(); 
+                         count = 0; 
+                         flag = false;
+                     }
+
+
+                   }
+               
+                       flag = true;
+               }
+
+            }
+
+       function PAM(){
+
+               var sub_k;
+               var count = 0;
+               var count1 = 0;
+               var flag = true;
+               //var min_E = 0;
+               init_cluster(); 
+               E_former = getE_initial();
+               for(var i = 0;i < k.length;i++){
+                   while(flag){
+                      count1++;
+                       sub_k = Math.ceil(Math.random()*dataLength)-1;
+                       while(k[i]==sub_k||sub_k==-1){
+                            sub_k = Math.ceil(Math.random()*dataLength)-1;
+                       }
+                       k1[i] = sub_k;
+                       record_cluster();
+               //document.write("i = "+ i+"<br>");   
+                       E_latter = getE_record();   
+               // document.write("k = "+k+"<br>");  
+               //document.write("k1 = "+k1+"<br>");
+               //document.write("E_former = "+E_former+" E_latter = "+E_latter+"<br>");  
+                       if(E_latter<E_former){ 
+                            count++;
+                            k[i] = k1[i];
+                            copy_initial();                                              
+                            E_former = E_latter;
+                          
+                        }else if(count<15&&count1<50){
+                         k1[i] = k[i];
+                         clear_record(); 
+                     }else{
+
+                         k1[i] = k[i];
+                         clear_record(); 
+                         count = 0; 
+                         count1 = 0;
+                         flag = false;
+                     }
+                   }
+                       flag = true;
+               }
+
+            }
+        function getE_initial(){
+       	
+        	var E = 0.0;
+        	var rigrid_speed;
+            for(var i = 0;i < k.length;i++) {
+                    rigrid_speed = data[k[i]][4]; 
+                   for(var j = 0; j<initial[i].length;j++){
+                        E += Math.abs(rigrid_speed-data[initial[i][j]][4]);
+
+                }
+            }
+   //document.write("getE_initial = "+E+"<br>");             
+            return E;
+           }
+
+        function getE_record(){
+  	
+        	var E = 0.0;
+        	var rigrid_speed;
+            for(var i = 0;i < k1.length;i++) {
+                    rigrid_speed = data[k1[i]][4]; 
+                   for(var j = 0; j<record[i].length;j++){
+                        E += Math.abs(rigrid_speed-data[record[i][j]][4]);
+                }
+//document.write("k1"+i+".length = "+record[i].length);     
+//document.write(" E"+i+" = "+E+"<br>");  
+            }
+ //document.write("getE_record = "+E+"<br>");            
+            return E;
+           } 
+
+             function record_cluster(){
+
+              for(var i = 0;i < dataLength;i++){  //将数据集中的对象分配到最相似的簇
+                   
+                    var group = get_record_group(i);
+                    var length1 = record[group];
+                  if(Array.isArray(length1))     
+                    record[group].push(i);
+                }             
+  
+           }
+
+      function get_initial_group(index){
+                 var group = 0;
+
+                 var mingap = Math.abs(data[k[0]][4]-data[index][4]);
+                 for(var i = 1;i<k.length;i++){
+                        var gap = Math.abs(data[k[i]][4]-data[index][4]);
+                        if(gap < mingap){
+                           group = i;
+                           mingap = gap;
+                       }
+
+                 }
+               return group;
+               }
+
+      function get_record_group(index){
+                 var group = 0;
+                 var m = k1[0];                      
+                 var mingap = Math.abs(data[m][4]-data[index][4]);
+                 for(var i = 1;i<k1.length;i++){
+                 	     m = k1[i];
+                        var gap = Math.abs(data[m][4]-data[index][4]);
+                        if(gap < mingap){
+                           group = i;
+                           mingap = gap;
+                       }
+
+                 }
+               return group;
+               }
+
+    function copy_initial(){
+                for(var i = 0;i < initial.length;i++){ //record->initial,并且清空record;
+                	initial[i].splice(0,initial[i].length);//清空簇
+                	   for(var j = 0;j < record[i].length;j++)
+                	   	     initial[i].push(record[i][j]);
+
+                    record[i].splice(0,record[i].length);
+                }   
+            }   
+
+    function clear_record(){ //清空record;
+                for(var i = 0;i < record.length;i++){  
+                  record[i].splice(0,record[i].length);
+                }   
+            }   
+
+    function displaycluster(){
+                  var k = 25;
+                  var sum = 0;
+                  var k2 = prompt("请输入簇的数量:","25");
+                  if (k2 != null){
+                      k = parseInt(k2);
+                 }else{
+                    alert("你选择了默认项");
+               }
+
+                  initialCluster(k);
+                  PAM1();
+                 
+                  document.write("共分为"+k+"簇:<br>");
+                  for(var i = 0 ;i<initial.length;i++){
+                       initial[i].sort();
+                       sum += initial[i].length;
+                       document.write("第"+(i+1)+"簇的容量为:"+initial[i].length+"</br>");
+                       document.write("第"+(i+1)+"簇的速度内容如下:</br>");
+                       for(var j = 0;j<initial[i].length;j++){
+                         if((j+1)%10==0)
+                         document.write(data[initial[i][j]][4]+"<br>");
+                         else
+                        document.write(data[initial[i][j]][4]+"       ");
+                       }
+                       document.write("<br>");
+
+                  }
+                                         
+           }      
+      window.onload =displaycluster();
+           
+    </script>
+    <body>
+    </body>
+    </html>
