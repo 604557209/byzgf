@@ -16,6 +16,10 @@
  <!--    // <script src="http://leaflet.github.io/Leaflet.heat/dist/leaflet-heat.js"></script> -->
     <script type="text/javascript" src="./database.js"></script>
     <script> 
+        var paint = 0;
+        var finish = 0
+        var latlng1 = [];
+        var map;
         window.onload=function(){ 
             //初始化地图控件 
             //var map = L.map('map').setView([51.505, -0.09], 13); 
@@ -26,9 +30,22 @@
                maxZoom: 18,
                id: '604552709.cifbsf0ev2xcysdknrcm0850z'
 }).addTo(map);
-           
+             var popup = L.popup();
+              function onMapClick(e) { 
+                popup 
+                    .setLatLng(e.latlng) 
+                    .setContent("You clicked the map at " + e.latlng.toString()) 
+                    .openOn(map); 
+                   if(paint == 1){
+                    
+                    latlng1.push(e.latlng);
+               }
+            } 
+            map.on('click', onMapClick); 
            f();
+
          }
+         
       function f(){
 
         var select1  =  document.getElementById("select1"); 
@@ -129,8 +146,8 @@
       //     blur: 8, 
       //     maxZoom: 9,
       // }).addTo(map);
-             var ploy = database[i]["POLYGON"]; 
-             var polygon = L.geoJson(ploy,{}).addTo(map);
+             // var ploy = database[i]["POLYGON"]; 
+             // var polygon = L.geoJson(ploy,{}).addTo(map);
                    break;
                 }       
         }
@@ -153,11 +170,35 @@
         }
         // document.getElementById("object3").style.display="";  
     }  
+    function painting(){
+
+          paint = 1;
+
+
+       }
+ 
+        function finishpaint() {
+
+                // document.write(latlng1.toString()+"<br>");
+           var polygon = L.polygon(latlng1).addTo(map);
+                       // count = 1;
+                       latlng1 = [];
+          // body...
+        }
+       function cancel(){
+          paint = 0;
+          // count = 1;
+          latlng1 = []; 
+        }
 
    </script> 
 </head> 
 <body> 
-    <div id="map" style="width: 1600px; height: 600px"></div> 
+    <div id="map" style="width: 1200px; height: 600px"></div> 
+
+     <button type="button" onclick='painting()'>开始绘图</button>
+     <button type="button" onclick='finishpaint()'>完成绘图</button>
+     <button type="button" onclick="cancel()">取消绘图</button>
     
     <table width="1000" height="100" align="center">
       <tr><th><font color="#DC1437">港口名</font></th><th><font color="#DC1437">港口描述</font></th><th></tr>
