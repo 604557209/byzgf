@@ -1,0 +1,331 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <title>Leaflet Quick Start Guide Example</title> 
+    <meta charset="utf-8" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+       
+    <!-- 引用 --> 
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
+     <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
+
+    <link rel="stylesheet" href="screen.css" />
+    <link rel="stylesheet" href="../dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="../dist/MarkerCluster.Default.css" />
+    <script src="../dist/leaflet.markercluster-src.js"></script>
+ <!--    // <script src="http://leaflet.github.io/Leaflet.heat/dist/leaflet-heat.js"></script> -->
+    <script type="text/javascript" src="./database.js"></script>
+    <script> 
+        var paint = 0;
+        var finish = 0
+        var latlng1 = [];
+        var map;
+        var count = 0;
+        window.onload=function(){ 
+            //初始化地图控件 
+            //var map = L.map('map').setView([51.505, -0.09], 13); 
+             map =  L.map('map').setView([32.001453, 120.334633], 4); 
+            //添加图层 
+           L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiNjA0NTUyNzA5IiwiYSI6ImNpZmJzZjF4bjJ3cHVzdWtucWRzYmhua3QifQ.GYXlJAB80tFG4B0-euFCsg', {
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+               maxZoom: 18,
+               id: '604552709.cifbsf0ev2xcysdknrcm0850z'
+}).addTo(map);
+             var popup = L.popup();
+              function onMapClick(e) { 
+                popup 
+                    .setLatLng(e.latlng) 
+                    .setContent("You clicked the map at " + e.latlng.toString()) 
+                    .openOn(map); 
+                   if(paint == 1){
+                    
+                    if(count<2){
+                    latlng1.push(e.latlng);
+                    count++;
+                  } else{
+                      
+                     latlng1 = [] ;
+                     latlng1.push(e.latlng);
+                     count = 1;
+
+                  }
+               }
+            } 
+            map.on('click', onMapClick); 
+           f();
+
+         }
+         
+      function f(){
+
+        var select1  =  document.getElementById("select1"); 
+
+            var option0  =   new  Option("--","--");
+            var option1  =   new  Option("中国","中国");  
+            select1.options[0] = option0;
+            select1.options[1] = option1;      
+              }
+     function f1(v){  
+        //alert(v);  
+        //清除后面的项  
+        document.getElementById("object2").options.length=0  
+        document.getElementById("object3").options.length=0  
+        document.getElementById("object2").style.display="none";  
+        document.getElementById("object3").style.display="none";  
+          
+         var s  =  document.getElementById("object1");     
+        if(v=="中国"){  
+            var option0  =   new  Option("上海市","上海市");  
+            var option1  =   new  Option("大连市","大连市");
+            var option2  =   new  Option("宁波市","宁波市");  
+            var option3  =   new  Option("天津市","天津市");
+            var option4  =   new  Option("青岛市","青岛市");
+            s.options[0] = option0;  
+            s.options[1] = option1;
+            s.options[2] = option2; 
+            s.options[3] = option3; 
+            s.options[4] = option4;    
+        }
+        //显示出来  
+        document.getElementById("object1").style.display="";  
+    }  
+      
+    function f2(v){  
+        //alert(v);  
+        //清除后面的项  
+        document.getElementById("object3").options.length=0  
+        document.getElementById("object3").style.display="none";  
+          
+        var s  =  document.getElementById("object2");     
+        if(v=="上海市"){  
+            var option0  =   new  Option("--","--");
+            var option1  =   new  Option("上海港","上海港");
+            var option2  =   new  Option("添加港口","添加港口");
+            s.options[2] = option2;
+            s.options[0] = option0;
+            s.options[1] = option1;   
+            
+        }else if(v=="大连市"){  
+            var option0  =   new  Option("--","--");  
+            var option1  =   new  Option("大连港","大连港");   
+            var option2  =   new  Option("添加港口","添加港口");
+            s.options[2] = option2; 
+            s.options[0] = option0;  
+            s.options[1] = option1;   
+         }else if(v=="天津市"){  
+            var option0  =   new  Option("--","--");  
+            var option1  =   new  Option("天津港","天津港");   
+             var option2  =   new  Option("添加港口","添加港口");
+            s.options[2] = option2;
+            s.options[0] = option0;  
+            s.options[1] = option1;   
+         }else if(v=="宁波市"){  
+            var option0  =   new  Option("--","--");  
+            var option1  =   new  Option("宁波港","宁波港");   
+            var option2  =   new  Option("添加港口","添加港口");
+            s.options[2] = option2;
+            s.options[0] = option0;  
+            s.options[1] = option1;   
+         }else if(v=="青岛市"){  
+            var option0  =   new  Option("--","--");  
+            var option1  =   new  Option("青岛港","青岛港");   
+            var option2  =   new  Option("添加港口","添加港口");
+            s.options[2] = option2; 
+            s.options[0] = option0;  
+            s.options[1] = option1;   
+         }
+          
+        document.getElementById("object2").style.display="";  
+    }  
+      
+    function f3(v){  
+        //alert(v);  
+        var intr  =  document.getElementById("intr");     
+        for(var i = 0;i < database.length;i++){
+                if(v==database[i]["Name"]){
+                   
+                   intr.innerHTML=database[i]["INTR"];
+                   var lat = parseFloat(database[i]['LAT']);
+                   var log = parseFloat(database[i]['LOG']);
+                   // document.write(lat+"<br>"+log+"<br>");
+                   map.setView([lat, log], 13);
+      //              var ss = [0];
+      //              ss[0] = [lat,log,3];
+      //             var heat = L.heatLayer(ss,{
+      //     radius: 30,
+      //     blur: 8, 
+      //     maxZoom: 9,
+      // }).addTo(map);
+             // var ploy = database[i]["POLYGON"]; 
+             // var polygon = L.geoJson(ploy,{}).addTo(map);
+                   break;
+                }       
+        }
+        if(v=="添加港口"){
+           var city = window.prompt("请输入港口城市","如上海市");
+           var HName = window.prompt("请输入港口名","如上海港");
+           var log1 = parseFloat(window.prompt("请输入港口所在经度","如121.0990902"));
+           var lat1 = parseFloat(window.prompt("请输入港口所在维度","如38.0990902"));
+           var intr1 = window.prompt("请简介港口","如，十分好");
+           var term = {};
+           
+           term["Name"] = HName;
+           term["CName"] = city;
+           term["LOG"] = log1;
+           term["LAT"] = lat1;
+           term["INTR"] = intr1;
+           database.push(term);
+           document.write(database.length+"<br>");
+
+        }
+        // document.getElementById("object3").style.display="";  
+    }  
+    function painting(){
+
+          paint = 1;
+          count = 0;
+          latlng1 = [];
+
+
+       }
+ 
+        function finishpaint() {
+
+           var polyline = L.polyline(latlng1).addTo(map); //客户所画直线
+           var dataUp = [30.0,40.0,50.0,70.0,90.0,20.0,130.0,400.0,200.0,450.0,130.0,70.0]; //斜向上流量
+           var datadown = [50.0,30.0,40.0,170.0,190.0,720.0,330.0,240.0,700.0,310.0,230.0,90.0]; //斜向下流量
+           
+          // if(latlng1[1].lat<latlng1[0].lat){
+          //     var temp = latlng1[1].lat;
+          //     latlng1[1].lat = latlng1[0].lat;
+          //     latlng1[0].lat = temp;
+          // }
+
+           var latGap = latlng1[1].lat - latlng1[0].lat;   //线段顶端维度差
+           var logGap = latlng1[1].lng - latlng1[0].lng;   //线段顶端精度差
+           var length = 0;
+        
+
+
+           if(Math.abs(latGap)<0.01)
+              length = 0.01;
+           else
+              length = latGap; // 流量柱状图标准
+
+           var deg = Math.atan(latGap/logGap);  //线段与纬线所成夹角
+           var maxVaUp = 0;
+                 for(var i = 0;i<dataUp.length;i++){  //寻找斜向上最大流量单点
+                            if(dataUp[i]>maxVaUp)
+                              maxVaUp =  dataUp[i];
+                          }
+
+           var maxVadown = 0;      //寻找斜向上最大流量单点
+                 for(var i = 0;i<datadown.length;i++){
+                           if(datadown[i]>maxVadown)
+                              maxVadown =  datadown[i];
+
+                          }
+
+
+                          
+            var degLogUp = [];
+            var degLatUp = [];
+           
+            var gapUp = logGap / dataUp.length;
+            var rectanglelist = [];
+            var rectanglelist1 = [];
+            for(var i = 0; i<=dataUp.length;i++){   //画柱状图
+                         
+                  degLogUp.push(gapUp*i*Math.cos(deg)); 
+                  degLatUp.push(gapUp*i*Math.sin(deg));
+            // document.write(degLatUp[i]+"+"+degLogUp+"<>");      
+
+                
+              } 
+
+
+            var degLogDown = [];
+            var degLatDown = [];
+            var gapDown = logGap / datadown.length;  
+           for(var i = 0; i<=datadown.length;i++){
+                         
+                  degLogDown.push(gapDown*i*Math.cos(deg)); 
+                  degLatDown.push(gapDown*i*Math.sin(deg));
+       // document.write(degLatDown[i]+"+"+degLogDown+"<BR>");           
+              }
+
+       
+
+             for(var i = 0; i<dataUp.length;i++){ //确定柱状图经纬度坐标->斜向上 
+                  var rectangle1 = []
+                 
+                  rectangle1.push([latlng1[0].lat+degLatUp[i],latlng1[0].lng+degLogUp[i]]);
+                  rectangle1.push([latlng1[0].lat+degLatUp[i+1],latlng1[0].lng+degLogUp[i+1]])
+                  rectangle1.push([latlng1[0].lat+degLatUp[i+1]+dataUp[i]/maxVaUp*length*Math.cos(deg),latlng1[0].lng+degLogUp[i+1]-dataUp[i]/maxVaUp*length*Math.sin(deg)]);
+                  rectangle1.push([latlng1[0].lat+degLatUp[i]+dataUp[i]/maxVaUp*length*Math.cos(deg),latlng1[0].lng+degLogUp[i]-dataUp[i]/maxVaUp*length*Math.sin(deg)]);
+ 
+                  rectanglelist.push(rectangle1);
+                  
+// document.write("<br>up"+rectangle1[i]);                 
+             }
+             
+               for(var i = 0; i<datadown.length;i++){  //确定柱状图经纬度坐标->斜向下
+                  
+                  var rectangle2 = [];
+                  rectangle2.push([latlng1[0].lat+degLatDown[i],latlng1[0].lng+degLogDown[i]]);
+                  rectangle2.push([latlng1[0].lat+degLatDown[i+1],latlng1[0].lng+degLogDown[i+1]])
+                  rectangle2.push([latlng1[0].lat+degLatDown[i+1]-datadown[i]/maxVadown*length*Math.cos(deg),latlng1[0].lng+degLogDown[i+1]+datadown[i]/maxVadown*length*Math.sin(deg)]);
+                  rectangle2.push([latlng1[0].lat+degLatDown[i]-datadown[i]/maxVadown*length*Math.cos(deg),latlng1[0].lng+degLogDown[i]+datadown[i]/maxVadown*length*Math.sin(deg)]);
+                    rectanglelist1.push(rectangle2);
+// document.write("<br>down"+rectangle2[i]);
+               }
+
+
+            for(var i = 0;i<rectanglelist.length;i++){  //黄色代表向上流量
+                 
+               var lee =  L.polygon(rectanglelist[i], {color: "#FF3333", weight: 1}).addTo(map);              
+
+               }
+
+            for(var i = 0;i<rectanglelist1.length;i++){ //紫色代表斜向下流量
+                 
+               var lee =  L.polygon(rectanglelist1[i], {color: "#663366", weight: 1}).addTo(map);              
+
+               }   
+
+                       latlng1 = [];
+                       count = 0;
+          
+        }
+       function cancel(){
+          paint = 0;
+          // count = 1;
+          latlng1 = []; 
+          count = 0
+        }
+
+   </script> 
+</head> 
+<body> 
+    <div id="map" style="width: 1200px; height: 600px"></div> 
+
+     <button type="button" onclick='painting()'>开始绘图</button>
+     <button type="button" onclick='finishpaint()'>完成绘图</button>
+     <button type="button" onclick="cancel()">取消绘图</button>
+    
+    <table width="1000" height="100" align="center">
+      <tr><th><font color="#DC1437">港口名</font></th><th><font color="#DC1437">港口描述</font></th><th></tr>
+       <tr><td align="center"><font color="#DC1437">
+       <select name="select1" id="select1" onChange="f1(this.value);" >  
+       </select>  
+       <select id="object1" name="select2" onChange="f2(this.value);" style="display:none ">  
+       </select>  
+       <select id="object2" name="select3" onChange="f3(this.value);" style="display:none ">  
+       </select></td>
+<select id="object3" name="select4" style="display:none ">  
+</select>  
+    <td  width="730"><font color="#DC1437"><p id="intr"></p></td>
+     </table>
+
+</body> 
+</html>
